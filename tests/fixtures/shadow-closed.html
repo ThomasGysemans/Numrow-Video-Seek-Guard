@@ -1,0 +1,10 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>Video inside a closed shadow root</title>
+<script src="recorder.js"></script>
+<div id="host"></div>
+<script>
+  document.getElementById("host")
+    .attachShadow({ mode: "closed" })
+    .appendChild(document.createElement("video"));
+</script>
