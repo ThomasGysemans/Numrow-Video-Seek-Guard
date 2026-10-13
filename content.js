@@ -31,10 +31,16 @@
     return el.closest('[role="textbox"], [role="searchbox"], [role="combobox"]') !== null;
   };
 
+  // A live stream (video call, remote desktop, cloud gaming) has no timeline to
+  // seek in, and remote sessions need the number row for themselves.
+  const isSeekable = (media) => !(media.srcObject instanceof MediaStream);
+
   // Recursive media lookup that also walks into shadow roots (some players,
   // such as Reddit's, render their <video> inside one).
   const containsMedia = (root) => {
-    if (root.querySelector("video, audio")) return true;
+    for (const media of root.querySelectorAll("video, audio")) {
+      if (isSeekable(media)) return true;
+    }
     for (const el of root.querySelectorAll("*")) {
       const shadow = el.openOrClosedShadowRoot || el.shadowRoot;
       if (shadow && containsMedia(shadow)) return true;
@@ -60,6 +66,9 @@
     // ...that produced a symbol. A real digit (Shift held, or QWERTY layout)
     // is left alone.
     if (/^[0-9]$/.test(event.key)) return;
+    // Shift is how layouts with an unshifted digit row (QWERTY...) type these
+    // symbols on purpose. On AZERTY, Shift yields a digit, already let through.
+    if (event.shiftKey) return;
 
     // Keep browser/app combos (Ctrl+1, Alt+1...) but still handle AltGr,
     // which is reported as Ctrl+Alt on Windows.
@@ -69,6 +78,9 @@
 
     const target = event.composedPath()[0] || event.target;
     if (isTextEntry(target)) return;
+    // A page holding the pointer lock is a game or a remote session: it reads
+    // the number row by position (weapon slots...), which is what we would break.
+    if (document.pointerLockElement) return;
     if (ONLY_WITH_MEDIA && !pageHasMedia()) return;
 
     event.stopImmediatePropagation();

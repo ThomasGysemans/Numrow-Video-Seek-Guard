@@ -1,0 +1,12 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>Video showing a live stream</title>
+<script src="recorder.js"></script>
+<canvas id="source" width="16" height="16"></canvas>
+<video id="stream" muted></video>
+<script>
+  // Stands in for a remote desktop or video call: a MediaStream has no timeline.
+  const source = document.getElementById("source");
+  source.getContext("2d");
+  document.getElementById("stream").srcObject = source.captureStream();
+</script>

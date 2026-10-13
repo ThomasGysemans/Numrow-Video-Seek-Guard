@@ -1,0 +1,10 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>Game holding the pointer lock</title>
+<script src="recorder.js"></script>
+<canvas id="game" width="200" height="200" style="background: #ccc"></canvas>
+<audio></audio>
+<script>
+  const game = document.getElementById("game");
+  game.addEventListener("click", () => game.requestPointerLock());
+</script>

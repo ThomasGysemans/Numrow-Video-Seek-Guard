@@ -15,7 +15,7 @@ There is no build step: the browser loads `manifest.json` and `content.js` as-is
 - **Lint**: `npm run lint` (`web-ext lint`). One warning, `KEY_FIREFOX_ANDROID_UNSUPPORTED_BY_MIN_VERSION`, is expected and must be left as-is: the extension targets desktop Firefox only, so do not add a `gecko_android` key to silence it.
 - **Run**: in Firefox, open `about:debugging#/runtime/this-firefox` → "Load Temporary Add-on…" → pick `manifest.json`.
 - **After editing**: click "Reload" on the add-on in `about:debugging`, then reload the target tab (the script is injected at `document_start`, so already-open pages keep the old version).
-- **Manual testing without an AZERTY keyboard**: the handler fires whenever a `Digit*` key produces a non-digit `event.key`, so `Shift+<number>` on a QWERTY layout exercises the same code path.
+- **Manual testing** needs a layout whose unshifted number row types symbols: switch the OS to French AZERTY. `Shift+<number>` on QWERTY does not exercise the handler, since Shift is let through on purpose.
 
 ## Tests
 
@@ -34,9 +34,13 @@ There is no build step: the browser loads `manifest.json` and `content.js` as-is
 1. `event.isTrusted` — synthetic events dispatched by pages are ignored.
 2. `event.code` matches `Digit[0-9]` — number row only, never the numpad.
 3. `event.key` is *not* a digit — a real digit (Shift held on AZERTY, or QWERTY) passes through untouched.
-4. No Ctrl/Meta/Alt, unless `AltGraph` is active (Windows reports AltGr as Ctrl+Alt).
-5. The target is not a text entry (`isTextEntry`), resolved through `event.composedPath()[0]` so that focus inside a shadow root is not retargeted to its host.
-6. If `ONLY_WITH_MEDIA` is true, the frame contains a `<video>`/`<audio>` (`pageHasMedia`).
+4. Shift is not held — on QWERTY-like layouts Shift+number is how these symbols are typed on purpose, so the extension stays out of the way there. On AZERTY, Shift yields a digit and step 3 already returned.
+5. No Ctrl/Meta/Alt, unless `AltGraph` is active (Windows reports AltGr as Ctrl+Alt).
+6. The target is not a text entry (`isTextEntry`), resolved through `event.composedPath()[0]` so that focus inside a shadow root is not retargeted to its host.
+7. The document does not hold the pointer lock — a game or remote session reads the number row by position.
+8. If `ONLY_WITH_MEDIA` is true, the frame contains a seekable `<video>`/`<audio>` (`pageHasMedia`). Media fed by a `MediaStream` (video call, remote desktop, cloud gaming) is not seekable and does not count.
+
+Steps 4, 7 and 8 exist to avoid breaking pages that are not video players. "The frame contains media" is only a proxy for "a player will hijack this key", so keep it as narrow as possible.
 
 ### Invariants to preserve
 
@@ -44,6 +48,14 @@ There is no build step: the browser loads `manifest.json` and `content.js` as-is
 - **Only `stopImmediatePropagation()`, never `preventDefault()`.** Browser defaults (e.g. Firefox quick find on `'`) must keep working, and the character must still be typed where applicable.
 - **Media detection is per frame.** With `all_frames: true` and `match_about_blank: true`, every frame gets its own script instance and its own `mediaCache`; `containsMedia(document)` does not look into child iframes. This works because key events are dispatched in the focused frame.
 - **`mediaCache` (1 s TTL)** exists because `containsMedia` walks every element and shadow root; key auto-repeat would otherwise rescan the DOM on each event.
+
+### Accepted limitations
+
+These are known and were deliberately left alone. Do not "fix" them without being asked:
+
+- Any attached `<audio>` counts as media, including a hidden notification sound, so a web app with one loses its own shortcuts on these keys.
+- Audio created with `new Audio()` and never attached to the DOM is not detected, so such players are not guarded.
+- A `keydown` and its `keyup` can be treated differently when Shift is released in between.
 
 ### Firefox-specific parts
 

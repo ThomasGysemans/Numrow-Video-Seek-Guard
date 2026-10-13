@@ -11,7 +11,9 @@ On an AZERTY keyboard, the number-row keys type symbols (`& é " ' ( § è ! ç 
 <!-- TODO: confirm this URL once the add-on is listed on addons.mozilla.org -->
 **[Get Numrow Video Seek Guard for Firefox](https://addons.mozilla.org/firefox/addon/numrow-video-seek-guard/)**
 
-Click **Add to Firefox** and you are done. There is nothing to configure. Requires Firefox 140 or later.
+Click **Add to Firefox** and you are done. There is nothing to configure.
+
+The extension only exists for Firefox on desktop, version 140 or later. It is not available for other browsers or for Firefox for Android.
 
 ## What to expect
 
@@ -19,6 +21,7 @@ Click **Add to Firefox** and you are done. There is nothing to configure. Requir
 - Shift + number still types a real digit, so the player's jump shortcuts remain available when you want them.
 - Typing in text fields, the numpad, and browser shortcuts such as Ctrl+1 work as usual.
 - Pages without a video or audio player are left alone.
+- So are video calls, remote desktops and games that capture the mouse, even though they use video or sound.
 
 ## Privacy
 

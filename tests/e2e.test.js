@@ -113,6 +113,13 @@ describe("on a page with a video", () => {
     assert.ok(events.some((event) => event.type === "keydown" && event.code === "Digit7"));
   });
 
+  it("lets Shift combos through", async () => {
+    const events = await numberRowEventsSeenByPage((actions) =>
+      actions.keyDown(Key.SHIFT).sendKeys("!").keyUp(Key.SHIFT).perform(),
+    );
+    assert.ok(events.some((event) => event.type === "keydown" && event.key === "!"));
+  });
+
   it("does not interfere with typing in a text field", async () => {
     const input = await driver.findElement(By.id("text"));
     await input.click();
@@ -142,6 +149,12 @@ describe("media detection", () => {
     assert.deepEqual(await numberRowEventsSeenByPage(press("&")), []);
   });
 
+  it("ignores a live stream, which has no timeline to seek in", async () => {
+    await open("live-stream.html");
+    const events = await numberRowEventsSeenByPage(press("&"));
+    assert.ok(events.some((event) => event.type === "keydown" && event.code === "Digit7"));
+  });
+
   it("is scoped to the frame that has focus", async () => {
     await open("iframe.html");
     const topFrameEvents = await numberRowEventsSeenByPage(press("&"));
@@ -150,5 +163,18 @@ describe("media detection", () => {
     await driver.switchTo().frame(await driver.findElement(By.css("iframe")));
     await driver.findElement(By.css("video")).click();
     assert.deepEqual(await numberRowEventsSeenByPage(press("&")), []);
+  });
+});
+
+describe("on a page that holds the pointer lock", () => {
+  it("steps aside while the lock is held, even though the page has media", async () => {
+    await open("pointer-lock.html");
+    assert.deepEqual(await numberRowEventsSeenByPage(press("&")), []);
+
+    await driver.findElement(By.id("game")).click();
+    await driver.wait(() => driver.executeScript("return document.pointerLockElement !== null"), 5000);
+
+    const events = await numberRowEventsSeenByPage(press("&"));
+    assert.ok(events.some((event) => event.type === "keydown" && event.code === "Digit7"));
   });
 });

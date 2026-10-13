@@ -11,7 +11,9 @@ Sur un clavier AZERTY, les touches de la rangée des chiffres tapent des symbole
 <!-- TODO : confirmer cette URL une fois l'extension publiée sur addons.mozilla.org -->
 **[Installer Numrow Video Seek Guard pour Firefox](https://addons.mozilla.org/firefox/addon/numrow-video-seek-guard/)**
 
-Cliquez sur **Ajouter à Firefox**, et c'est tout : il n'y a rien à configurer. Firefox 140 ou une version ultérieure est nécessaire.
+Cliquez sur **Ajouter à Firefox**, et c'est tout : il n'y a rien à configurer.
+
+L'extension n'existe que pour Firefox sur ordinateur, à partir de la version 140. Elle n'est disponible ni pour les autres navigateurs, ni pour Firefox pour Android.
 
 ## Ce qui change
 
@@ -19,6 +21,7 @@ Cliquez sur **Ajouter à Firefox**, et c'est tout : il n'y a rien à configurer.
 - Maj + chiffre tape toujours un vrai chiffre : les raccourcis de saut du lecteur restent donc disponibles quand vous en avez besoin.
 - La saisie dans les champs de texte, le pavé numérique et les raccourcis du navigateur comme Ctrl+1 fonctionnent comme d'habitude.
 - Les pages sans lecteur vidéo ou audio ne sont pas affectées.
+- Les appels vidéo, les bureaux à distance et les jeux qui capturent la souris ne le sont pas non plus, bien qu'ils utilisent de la vidéo ou du son.
 
 ## Vie privée
 
