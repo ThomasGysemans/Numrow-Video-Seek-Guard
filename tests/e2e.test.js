@@ -31,7 +31,11 @@ let driver;
 const packExtension = async () => {
   const dir = await mkdtemp(join(tmpdir(), "numrow-video-seek-guard-"));
   const manifest = JSON.parse(await readFile(join(ROOT, "manifest.json"), "utf8"));
-  const files = ["manifest.json", ...manifest.content_scripts.flatMap((script) => script.js)];
+  const files = new Set([
+    "manifest.json",
+    ...manifest.content_scripts.flatMap((script) => script.js),
+    ...Object.values(manifest.icons),
+  ]);
   for (const file of files) {
     await cp(join(ROOT, file), join(dir, file));
   }

@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96">
+  <defs>
+    <clipPath id="right-half"><rect x="48" width="48" height="96"/></clipPath>
+  </defs>
+  <!-- Shield: the guard. The same shape is drawn again, darker, on the right half for depth. -->
+  <path d="M48 5 86 17V45C86 68 70 83 48 92 26 83 10 68 10 45V17Z" fill="#4f46e5" stroke="#4f46e5" stroke-width="6" stroke-linejoin="round"/>
+  <path d="M48 5 86 17V45C86 68 70 83 48 92 26 83 10 68 10 45V17Z" fill="#4338ca" stroke="#4338ca" stroke-width="6" stroke-linejoin="round" clip-path="url(#right-half)"/>
+  <!-- Play symbol; the stroke only rounds its corners -->
+  <path d="M39 25 61 38 39 51Z" fill="#fff" stroke="#fff" stroke-width="5" stroke-linejoin="round"/>
+  <!-- Timeline: played part in white, the rest dimmed, knob at the current position -->
+  <path d="M27 66H69" stroke="#a5b4fc" stroke-width="6" stroke-linecap="round"/>
+  <path d="M27 66H48" stroke="#fff" stroke-width="6" stroke-linecap="round"/>
+  <circle cx="48" cy="66" r="7" fill="#fbbf24"/>
+</svg>

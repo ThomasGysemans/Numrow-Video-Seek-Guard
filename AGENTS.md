@@ -4,7 +4,7 @@ This file provides guidance to AI coding agents working with code in this reposi
 
 ## What this is
 
-A Firefox WebExtension (Manifest V3) made of two files: `manifest.json` and `content.js`. On AZERTY layouts the unshifted number row types symbols (`& é " ' ( § è ! ç à`), but video players read `event.code` (`Digit0`..`Digit9`) and treat those keys as "seek to N0%". The content script swallows those key events before page scripts see them.
+A Firefox WebExtension (Manifest V3) made of three files: `manifest.json`, `content.js` and the icon `icon.svg`. On AZERTY layouts the unshifted number row types symbols (`& é " ' ( § è ! ç à`), but video players read `event.code` (`Digit0`..`Digit9`) and treat those keys as "seek to N0%". The content script swallows those key events before page scripts see them.
 
 ## Commands
 
@@ -27,7 +27,7 @@ CI (`.github/workflows/ci.yml`) runs the lint and the tests on every pull reques
 - WebDriver key presses are trusted events and derive `event.code` from a US layout, so sending `&` gives `code: "Digit7"`, `key: "&"`. That is how the suite triggers the handler without an AZERTY layout; `!@#$%^&*()` covers `Digit1`..`Digit0`.
 - Every test loads its own page (`beforeEach` or an explicit `open`), so tests do not depend on the order they run in. Keep it that way: focus left behind by one test would otherwise change the next.
 - `numberRowEventsSeenByPage` always sends a control letter after the keys under test. Keep it: without it, "the page saw nothing" cannot be told apart from "the page did not have focus".
-- Only files referenced by the manifest are copied into the installed add-on, so a new content script is picked up automatically, but any other new runtime file must be added to `packExtension`.
+- Only files referenced by the manifest (content scripts and icons) are copied into the installed add-on, so those are picked up automatically, but any other new runtime file must be added to `packExtension`.
 - `webExt.ignoreFiles` in `package.json` keeps tests, docs and npm files out of `web-ext lint` and `web-ext build`.
 
 ## Architecture
@@ -68,3 +68,7 @@ These are known and were deliberately left alone. Do not "fix" them without bein
 ### Configuration
 
 The only setting is the `ONLY_WITH_MEDIA` constant at the top of `content.js`. There is no options page, background script, or storage. The version lives solely in `manifest.json`.
+
+### Icon
+
+`icon.svg` is a single hand-written SVG used for every size; Firefox renders SVG icons natively, so there are no PNG exports to keep in sync. It only uses shapes, never `<text>`, because text would depend on the fonts installed on each machine.
