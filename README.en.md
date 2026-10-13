@@ -4,7 +4,7 @@
 
 A Firefox extension that stops the AZERTY number row from making your videos jump around.
 
-On an AZERTY keyboard, the number-row keys type symbols (`& é " ' ( § è ! ç à`) unless you hold Shift. Many video players ignore that and treat those keys as "jump to 10%, 20%, …" shortcuts, so one stray keypress loses your place. This extension blocks those accidental jumps.
+On an AZERTY keyboard, the number-row keys type symbols (`& é " ' ( § è ! ç à`) unless you hold Shift. Many video players ignore that and treat those keys as "jump to 10%, 20%, …" shortcuts, so one stray keypress loses your place. This extension blocks those accidental jumps. Deliberate jumps still work: hold Shift while pressing the key.
 
 ## Install
 
@@ -19,7 +19,7 @@ The extension only exists for Firefox on desktop, version 140 or later. It is no
 ## What to expect
 
 - Pressing a number-row key without Shift no longer makes the video jump.
-- Shift + number still types a real digit, so the player's jump shortcuts remain available when you want them.
+- With Shift held, the same key still makes the video jump, so the player's shortcut remains available when you really want it.
 - Typing in text fields, the numpad, and browser shortcuts such as Ctrl+1 work as usual.
 - Pages without a video or audio player are left alone.
 - So are video calls, remote desktops and games that capture the mouse, even though they use video or sound.
