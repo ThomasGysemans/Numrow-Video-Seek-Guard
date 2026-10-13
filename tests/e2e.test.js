@@ -1,9 +1,10 @@
 // End-to-end tests: load the extension into a real Firefox and check which key
 // events reach the page.
 //
-// WebDriver derives `event.code` from a US layout, so sending "&" yields
-// code "Digit7" with key "&": a number-row key that produced a symbol, which is
-// exactly what the extension looks for. No AZERTY keyboard is needed.
+// WebDriver derives `event.code` from a US layout: sending "7" yields code
+// "Digit7" with key "7" (what a QWERTY keyboard sends), and sending "&" yields
+// code "Digit7" with key "&" (a number-row key that types a symbol, as on
+// AZERTY). Both layouts are covered without changing the system keyboard.
 
 import assert from "node:assert/strict";
 import { cp, mkdtemp, readFile, rm } from "node:fs/promises";
@@ -18,7 +19,9 @@ const ROOT = join(import.meta.dirname, "..");
 const FIXTURES = join(import.meta.dirname, "fixtures");
 const CONTENT_TYPES = { ".html": "text/html", ".js": "text/javascript" };
 
-// Unshifted-symbol stand-ins for Digit1..Digit0 on the US layout WebDriver uses.
+// Digit1..Digit0 as a layout that types digits sends them, then as a layout
+// that types symbols does (see the note on WebDriver above).
+const NUMBER_ROW_DIGITS = "1234567890";
 const NUMBER_ROW_SYMBOLS = "!@#$%^&*()";
 
 let server;
@@ -59,11 +62,11 @@ const startServer = () =>
 
 const open = (page) => driver.get(`${baseUrl}/${page}`);
 
-// Runs `sendKeys` and returns the number-row events the page received.
+// Runs `sendKeys` and returns the key events the page received.
 //
 // A letter the extension never touches is sent afterwards: it proves the page
 // was receiving keys, so an empty result really means "blocked".
-const numberRowEventsSeenByPage = async (sendKeys) => {
+const eventsSeenByPage = async (sendKeys) => {
   await driver.executeScript("window.receivedKeys.length = 0");
   await sendKeys(driver.actions());
   await driver.actions().sendKeys("a").perform();
@@ -73,7 +76,7 @@ const numberRowEventsSeenByPage = async (sendKeys) => {
     events.some((event) => event.key === "a"),
     "the page did not receive the control key, so it was not listening",
   );
-  return events.filter((event) => event.code.startsWith("Digit"));
+  return events.filter((event) => event.key !== "a");
 };
 
 const press = (keys) => (actions) => actions.sendKeys(keys).perform();
@@ -97,28 +100,32 @@ after(async () => {
 describe("on a page with a video", () => {
   beforeEach(() => open("media.html"));
 
-  it("blocks every number-row key that produced a symbol", async () => {
-    assert.deepEqual(await numberRowEventsSeenByPage(press(NUMBER_ROW_SYMBOLS)), []);
+  it("blocks every number-row key that types a digit", async () => {
+    assert.deepEqual(await eventsSeenByPage(press(NUMBER_ROW_DIGITS)), []);
   });
 
-  it("lets a real digit through", async () => {
-    const events = await numberRowEventsSeenByPage(press("7"));
+  it("blocks every number-row key that types a symbol", async () => {
+    assert.deepEqual(await eventsSeenByPage(press(NUMBER_ROW_SYMBOLS)), []);
+  });
+
+  it("lets the numpad through", async () => {
+    const events = await eventsSeenByPage(press(Key.NUMPAD7));
     assert.deepEqual(events, [
-      { type: "keydown", key: "7", code: "Digit7" },
-      { type: "keypress", key: "7", code: "Digit7" },
-      { type: "keyup", key: "7", code: "Digit7" },
+      { type: "keydown", key: "7", code: "Numpad7" },
+      { type: "keypress", key: "7", code: "Numpad7" },
+      { type: "keyup", key: "7", code: "Numpad7" },
     ]);
   });
 
   it("lets Ctrl combos through", async () => {
-    const events = await numberRowEventsSeenByPage((actions) =>
+    const events = await eventsSeenByPage((actions) =>
       actions.keyDown(Key.CONTROL).sendKeys("&").keyUp(Key.CONTROL).perform(),
     );
     assert.ok(events.some((event) => event.type === "keydown" && event.code === "Digit7"));
   });
 
   it("lets Shift combos through", async () => {
-    const events = await numberRowEventsSeenByPage((actions) =>
+    const events = await eventsSeenByPage((actions) =>
       actions.keyDown(Key.SHIFT).sendKeys("!").keyUp(Key.SHIFT).perform(),
     );
     assert.ok(events.some((event) => event.type === "keydown" && event.key === "!"));
@@ -139,34 +146,34 @@ describe("on a page with a video, when a control has focus", () => {
   beforeEach(() => open("text-entry.html"));
 
   for (const [name, element] of Object.entries(TEXT_ENTRIES)) {
-    it(`lets number-row symbols reach ${name}`, async () => {
+    it(`lets the number row reach ${name}`, async () => {
       await driver.executeScript(`${element}.focus()`);
-      const events = await numberRowEventsSeenByPage(press("&"));
+      const events = await eventsSeenByPage(press("&"));
       assert.ok(events.some((event) => event.type === "keydown" && event.key === "&"));
     });
   }
 
   it("leaves the typed character in the field", async () => {
     await driver.executeScript('document.getElementById("text").focus()');
-    await numberRowEventsSeenByPage(press("&"));
+    await eventsSeenByPage(press("&"));
     assert.equal(await driver.executeScript('return document.getElementById("text").value'), "&a");
   });
 
   it("still blocks on a control that takes no text", async () => {
     await driver.executeScript('document.getElementById("checkbox").focus()');
-    assert.deepEqual(await numberRowEventsSeenByPage(press("&")), []);
+    assert.deepEqual(await eventsSeenByPage(press("&")), []);
   });
 });
 
 describe("on a page without media", () => {
   beforeEach(() => open("no-media.html"));
 
-  it("lets number-row symbols through", async () => {
-    const events = await numberRowEventsSeenByPage(press("&"));
+  it("lets the number row through", async () => {
+    const events = await eventsSeenByPage(press("7"));
     assert.deepEqual(events, [
-      { type: "keydown", key: "&", code: "Digit7" },
-      { type: "keypress", key: "&", code: "Digit7" },
-      { type: "keyup", key: "&", code: "Digit7" },
+      { type: "keydown", key: "7", code: "Digit7" },
+      { type: "keypress", key: "7", code: "Digit7" },
+      { type: "keyup", key: "7", code: "Digit7" },
     ]);
   });
 });
@@ -181,36 +188,36 @@ describe("media detection", () => {
   for (const [name, page] of Object.entries(PAGES_WITH_MEDIA)) {
     it(`finds ${name}`, async () => {
       await open(page);
-      assert.deepEqual(await numberRowEventsSeenByPage(press("&")), []);
+      assert.deepEqual(await eventsSeenByPage(press("&")), []);
     });
   }
 
   it("ignores a live stream, which has no timeline to seek in", async () => {
     await open("live-stream.html");
-    const events = await numberRowEventsSeenByPage(press("&"));
+    const events = await eventsSeenByPage(press("&"));
     assert.ok(events.some((event) => event.type === "keydown" && event.code === "Digit7"));
   });
 
   it("is scoped to the frame that has focus", async () => {
     await open("iframe.html");
-    const topFrameEvents = await numberRowEventsSeenByPage(press("&"));
+    const topFrameEvents = await eventsSeenByPage(press("&"));
     assert.ok(topFrameEvents.length > 0, "the top frame has no media of its own");
 
     await driver.switchTo().frame(await driver.findElement(By.css("iframe")));
     await driver.findElement(By.css("video")).click();
-    assert.deepEqual(await numberRowEventsSeenByPage(press("&")), []);
+    assert.deepEqual(await eventsSeenByPage(press("&")), []);
   });
 });
 
 describe("on a page that holds the pointer lock", () => {
   it("steps aside while the lock is held, even though the page has media", async () => {
     await open("pointer-lock.html");
-    assert.deepEqual(await numberRowEventsSeenByPage(press("&")), []);
+    assert.deepEqual(await eventsSeenByPage(press("&")), []);
 
     await driver.findElement(By.id("game")).click();
     await driver.wait(() => driver.executeScript("return document.pointerLockElement !== null"), 5000);
 
-    const events = await numberRowEventsSeenByPage(press("&"));
+    const events = await eventsSeenByPage(press("&"));
     assert.ok(events.some((event) => event.type === "keydown" && event.code === "Digit7"));
   });
 });
