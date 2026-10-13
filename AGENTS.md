@@ -8,10 +8,12 @@ A Firefox WebExtension (Manifest V3) made of two files: `manifest.json` and `con
 
 ## Commands
 
-There is no build step: the browser loads `manifest.json` and `content.js` as-is. npm is only used for dev tooling (`npm install` first).
+There is no build step: the browser loads `manifest.json` and `content.js` as-is. npm is only used for dev tooling (`npm install` first, Node 22 or later).
+
+CI (`.github/workflows/ci.yml`) runs the lint and the tests on every pull request and on pushes to `main`.
 
 - **Test**: `npm test` runs the end-to-end suite in headless Firefox (Firefox 140+ must be installed; the driver is downloaded automatically).
-- **Single test**: `node --test --test-name-pattern="closed shadow root" tests/e2e.test.js`
+- **Single test**: `node --test --test-name-pattern="finds a video inside a closed shadow root" tests/e2e.test.js`
 - **Lint**: `npm run lint` (`web-ext lint`). One warning, `KEY_FIREFOX_ANDROID_UNSUPPORTED_BY_MIN_VERSION`, is expected and must be left as-is: the extension targets desktop Firefox only, so do not add a `gecko_android` key to silence it.
 - **Run**: in Firefox, open `about:debugging#/runtime/this-firefox` → "Load Temporary Add-on…" → pick `manifest.json`.
 - **After editing**: click "Reload" on the add-on in `about:debugging`, then reload the target tab (the script is injected at `document_start`, so already-open pages keep the old version).
@@ -23,6 +25,7 @@ There is no build step: the browser loads `manifest.json` and `content.js` as-is
 
 - Each fixture loads `recorder.js`, which logs every key event the page receives into `window.receivedKeys`. A test passes or fails on what ends up there.
 - WebDriver key presses are trusted events and derive `event.code` from a US layout, so sending `&` gives `code: "Digit7"`, `key: "&"`. That is how the suite triggers the handler without an AZERTY layout; `!@#$%^&*()` covers `Digit1`..`Digit0`.
+- Every test loads its own page (`beforeEach` or an explicit `open`), so tests do not depend on the order they run in. Keep it that way: focus left behind by one test would otherwise change the next.
 - `numberRowEventsSeenByPage` always sends a control letter after the keys under test. Keep it: without it, "the page saw nothing" cannot be told apart from "the page did not have focus".
 - Only files referenced by the manifest are copied into the installed add-on, so a new content script is picked up automatically, but any other new runtime file must be added to `packExtension`.
 - `webExt.ignoreFiles` in `package.json` keeps tests, docs and npm files out of `web-ext lint` and `web-ext build`.
@@ -36,7 +39,7 @@ There is no build step: the browser loads `manifest.json` and `content.js` as-is
 3. `event.key` is *not* a digit — a real digit (Shift held on AZERTY, or QWERTY) passes through untouched.
 4. Shift is not held — on QWERTY-like layouts Shift+number is how these symbols are typed on purpose, so the extension stays out of the way there. On AZERTY, Shift yields a digit and step 3 already returned.
 5. No Ctrl/Meta/Alt, unless `AltGraph` is active (Windows reports AltGr as Ctrl+Alt).
-6. The target is not a text entry (`isTextEntry`), resolved through `event.composedPath()[0]` so that focus inside a shadow root is not retargeted to its host.
+6. The focused element is not a text entry (`isTextEntry`). It is found by `focusedElement`, which follows `activeElement` down through shadow roots; `event.target` and `composedPath()` would stop at the host of a closed one.
 7. The document does not hold the pointer lock — a game or remote session reads the number row by position.
 8. If `ONLY_WITH_MEDIA` is true, the frame contains a seekable `<video>`/`<audio>` (`pageHasMedia`). Media fed by a `MediaStream` (video call, remote desktop, cloud gaming) is not seekable and does not count.
 
@@ -59,7 +62,7 @@ These are known and were deliberately left alone. Do not "fix" them without bein
 
 ### Firefox-specific parts
 
-- `el.openOrClosedShadowRoot` is a Firefox-only API exposed to extension content scripts; it is what lets the script find media inside *closed* shadow roots. The `|| el.shadowRoot` fallback only sees open roots.
+- `el.openOrClosedShadowRoot` is a Firefox-only API exposed to extension content scripts; it is what lets the script find media and the focused field inside *closed* shadow roots. The `|| el.shadowRoot` fallback in `shadowRootOf` only sees open roots.
 - `browser_specific_settings.gecko.data_collection_permissions` is why `strict_min_version` is `140.0`.
 
 ### Configuration

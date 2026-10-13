@@ -1,0 +1,22 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          # The oldest version allowed by "engines" in package.json.
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run lint
+      # Firefox ships with the runner image; the tests start it headless.
+      - run: firefox --version
+      - run: npm test

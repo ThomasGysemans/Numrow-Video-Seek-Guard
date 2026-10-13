@@ -10,7 +10,7 @@ import { cp, mkdtemp, readFile, rm } from "node:fs/promises";
 import { createServer } from "node:http";
 import { tmpdir } from "node:os";
 import { extname, join } from "node:path";
-import { after, before, describe, it } from "node:test";
+import { after, before, beforeEach, describe, it } from "node:test";
 import { Builder, By, Key } from "selenium-webdriver";
 import firefox from "selenium-webdriver/firefox.js";
 
@@ -91,7 +91,7 @@ after(async () => {
 });
 
 describe("on a page with a video", () => {
-  before(() => open("media.html"));
+  beforeEach(() => open("media.html"));
 
   it("blocks every number-row key that produced a symbol", async () => {
     assert.deepEqual(await numberRowEventsSeenByPage(press(NUMBER_ROW_SYMBOLS)), []);
@@ -120,18 +120,42 @@ describe("on a page with a video", () => {
     assert.ok(events.some((event) => event.type === "keydown" && event.key === "!"));
   });
 
-  it("does not interfere with typing in a text field", async () => {
-    const input = await driver.findElement(By.id("text"));
-    await input.click();
-    const events = await numberRowEventsSeenByPage(press("&"));
+});
 
-    assert.ok(events.some((event) => event.type === "keydown" && event.key === "&"));
-    assert.equal(await input.getAttribute("value"), "&a");
+describe("on a page with a video, when a control has focus", () => {
+  // Expressions evaluated in the page; each yields the element to focus.
+  const TEXT_ENTRIES = {
+    "a text input": 'document.getElementById("text")',
+    "a textarea": 'document.getElementById("textarea")',
+    "a contenteditable element": 'document.getElementById("editable")',
+    'an element with role="textbox"': 'document.getElementById("custom")',
+    "a text input inside a closed shadow root": "window.closedShadowField",
+  };
+
+  beforeEach(() => open("text-entry.html"));
+
+  for (const [name, element] of Object.entries(TEXT_ENTRIES)) {
+    it(`lets number-row symbols reach ${name}`, async () => {
+      await driver.executeScript(`${element}.focus()`);
+      const events = await numberRowEventsSeenByPage(press("&"));
+      assert.ok(events.some((event) => event.type === "keydown" && event.key === "&"));
+    });
+  }
+
+  it("leaves the typed character in the field", async () => {
+    await driver.executeScript('document.getElementById("text").focus()');
+    await numberRowEventsSeenByPage(press("&"));
+    assert.equal(await driver.executeScript('return document.getElementById("text").value'), "&a");
+  });
+
+  it("still blocks on a control that takes no text", async () => {
+    await driver.executeScript('document.getElementById("checkbox").focus()');
+    assert.deepEqual(await numberRowEventsSeenByPage(press("&")), []);
   });
 });
 
 describe("on a page without media", () => {
-  before(() => open("no-media.html"));
+  beforeEach(() => open("no-media.html"));
 
   it("lets number-row symbols through", async () => {
     const events = await numberRowEventsSeenByPage(press("&"));
@@ -144,10 +168,18 @@ describe("on a page without media", () => {
 });
 
 describe("media detection", () => {
-  it("finds a video inside a closed shadow root", async () => {
-    await open("shadow-closed.html");
-    assert.deepEqual(await numberRowEventsSeenByPage(press("&")), []);
-  });
+  const PAGES_WITH_MEDIA = {
+    "an audio player": "audio.html",
+    "a video inside an open shadow root": "shadow-open.html",
+    "a video inside a closed shadow root": "shadow-closed.html",
+  };
+
+  for (const [name, page] of Object.entries(PAGES_WITH_MEDIA)) {
+    it(`finds ${name}`, async () => {
+      await open(page);
+      assert.deepEqual(await numberRowEventsSeenByPage(press("&")), []);
+    });
+  }
 
   it("ignores a live stream, which has no timeline to seek in", async () => {
     await open("live-stream.html");

@@ -1,0 +1,19 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>Video next to text fields and other controls</title>
+<script src="recorder.js"></script>
+<video></video>
+<input id="text" type="text">
+<textarea id="textarea"></textarea>
+<div id="editable" contenteditable></div>
+<div id="custom" role="textbox" tabindex="0"></div>
+<input id="checkbox" type="checkbox">
+<div id="host"></div>
+<script>
+  // A closed root hides its content from the page, so the tests reach the
+  // field through this global.
+  window.closedShadowField = document.createElement("input");
+  document.getElementById("host")
+    .attachShadow({ mode: "closed" })
+    .appendChild(window.closedShadowField);
+</script>

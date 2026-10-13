@@ -22,6 +22,21 @@
     "button", "checkbox", "radio", "range", "color", "file", "image", "submit", "reset",
   ]);
 
+  // openOrClosedShadowRoot is Firefox-only and also returns closed roots.
+  const shadowRootOf = (el) => el.openOrClosedShadowRoot || el.shadowRoot;
+
+  // The element that really has focus, which is where key events are sent.
+  // event.target and composedPath() stop at the host of a closed shadow root.
+  const focusedElement = () => {
+    let el = document.activeElement;
+    while (el) {
+      const inner = shadowRootOf(el)?.activeElement;
+      if (!inner) break;
+      el = inner;
+    }
+    return el;
+  };
+
   // True if the element accepts text, in which case typing must work normally.
   const isTextEntry = (el) => {
     if (!(el instanceof Element)) return false;
@@ -42,7 +57,7 @@
       if (isSeekable(media)) return true;
     }
     for (const el of root.querySelectorAll("*")) {
-      const shadow = el.openOrClosedShadowRoot || el.shadowRoot;
+      const shadow = shadowRootOf(el);
       if (shadow && containsMedia(shadow)) return true;
     }
     return false;
@@ -76,8 +91,7 @@
       return;
     }
 
-    const target = event.composedPath()[0] || event.target;
-    if (isTextEntry(target)) return;
+    if (isTextEntry(focusedElement())) return;
     // A page holding the pointer lock is a game or a remote session: it reads
     // the number row by position (weapon slots...), which is what we would break.
     if (document.pointerLockElement) return;
