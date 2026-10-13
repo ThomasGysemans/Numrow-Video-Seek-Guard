@@ -1,31 +1,33 @@
 # Numrow Video Seek Guard
 
-A Firefox extension that stops the AZERTY number row from making your videos jump around.
+*[Read this in English](README.en.md)*
 
-On an AZERTY keyboard, the number-row keys type symbols (`& é " ' ( § è ! ç à`) unless you hold Shift. Many video players ignore that and treat those keys as "jump to 10%, 20%, …" shortcuts, so one stray keypress loses your place. This extension blocks those accidental jumps.
+Une extension Firefox qui empêche la rangée des chiffres d'un clavier AZERTY de faire sauter vos vidéos.
 
-## Install
+Sur un clavier AZERTY, les touches de la rangée des chiffres tapent des symboles (`& é " ' ( § è ! ç à`) tant que Maj n'est pas enfoncée. De nombreux lecteurs vidéo n'en tiennent pas compte et y voient des raccourcis « aller à 10 %, 20 %, … » : une touche effleurée par erreur, et vous perdez le fil de votre vidéo. Cette extension bloque ces sauts accidentels.
 
-<!-- TODO: confirm this URL once the add-on is listed on addons.mozilla.org -->
-**[Get Numrow Video Seek Guard for Firefox](https://addons.mozilla.org/firefox/addon/numrow-video-seek-guard/)**
+## Installation
 
-Click **Add to Firefox** and you are done. There is nothing to configure. Requires Firefox 140 or later.
+<!-- TODO : confirmer cette URL une fois l'extension publiée sur addons.mozilla.org -->
+**[Installer Numrow Video Seek Guard pour Firefox](https://addons.mozilla.org/firefox/addon/numrow-video-seek-guard/)**
 
-## What to expect
+Cliquez sur **Ajouter à Firefox**, et c'est tout : il n'y a rien à configurer. Firefox 140 ou une version ultérieure est nécessaire.
 
-- Pressing a number-row key without Shift no longer makes the video jump.
-- Shift + number still types a real digit, so the player's jump shortcuts remain available when you want them.
-- Typing in text fields, the numpad, and browser shortcuts such as Ctrl+1 work as usual.
-- Pages without a video or audio player are left alone.
+## Ce qui change
 
-## Privacy
+- Appuyer sur une touche de la rangée des chiffres sans Maj ne fait plus sauter la vidéo.
+- Maj + chiffre tape toujours un vrai chiffre : les raccourcis de saut du lecteur restent donc disponibles quand vous en avez besoin.
+- La saisie dans les champs de texte, le pavé numérique et les raccourcis du navigateur comme Ctrl+1 fonctionnent comme d'habitude.
+- Les pages sans lecteur vidéo ou audio ne sont pas affectées.
 
-The extension collects no data and makes no network requests. Firefox asks for access to all websites only because a video player can be on any page.
+## Vie privée
 
-## Run from source
+L'extension ne collecte aucune donnée et n'effectue aucune requête réseau. Firefox demande l'accès à tous les sites web uniquement parce qu'un lecteur vidéo peut se trouver sur n'importe quelle page.
 
-Open `about:debugging#/runtime/this-firefox` in Firefox, click **Load Temporary Add-on…** and select `manifest.json`. There is no build step.
+## Lancer depuis les sources
 
-## License
+Ouvrez `about:debugging#/runtime/this-firefox` dans Firefox, cliquez sur **Charger un module complémentaire temporaire…** puis sélectionnez `manifest.json`. Aucune compilation n'est nécessaire.
+
+## Licence
 
 [MIT](LICENSE)
