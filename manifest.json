@@ -1,0 +1,25 @@
+{
+  "manifest_version": 3,
+  "name": "Numrow Video Seek Guard",
+  "version": "1.0.0",
+  "description": "Stops AZERTY number-row keys (& é \" ' ( § è ! ç à) from triggering seek shortcuts in video players.",
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "numrow-video-seek-guard@thomasgysemans.dev",
+      "strict_min_version": "140.0",
+      "data_collection_permissions": {
+        "required": ["none"]
+      }
+    }
+  },
+  "host_permissions": ["<all_urls>"],
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content.js"],
+      "run_at": "document_start",
+      "all_frames": true,
+      "match_about_blank": true
+    }
+  ]
+}
