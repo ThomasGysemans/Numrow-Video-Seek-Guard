@@ -8,10 +8,11 @@ Sur un clavier AZERTY, les touches de la rangée des chiffres tapent des symbole
 
 ## Installation
 
-<!-- TODO : confirmer cette URL une fois l'extension publiée sur addons.mozilla.org -->
-**[Installer Numrow Video Seek Guard pour Firefox](https://addons.mozilla.org/firefox/addon/numrow-video-seek-guard/)**
+<!-- TODO : à la publication, remplacer la ligne « Bientôt disponible » par le lien vers la fiche, en vérifiant l'adresse :
+**[Installer Numrow Video Seek Guard pour Firefox](https://addons.mozilla.org/firefox/addon/numrow-video-seek-guard/)** -->
+**Bientôt disponible sur le catalogue des modules complémentaires de Firefox.**
 
-Cliquez sur **Ajouter à Firefox**, et c'est tout : il n'y a rien à configurer.
+L'installation se fera en un clic, sans rien à configurer. En attendant, vous pouvez essayer l'extension en la [lançant depuis les sources](#lancer-depuis-les-sources).
 
 L'extension n'existe que pour Firefox sur ordinateur, à partir de la version 140. Elle n'est disponible ni pour les autres navigateurs, ni pour Firefox pour Android.
 

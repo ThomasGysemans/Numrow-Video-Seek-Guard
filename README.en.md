@@ -8,10 +8,11 @@ On an AZERTY keyboard, the number-row keys type symbols (`& é " ' ( § è ! ç 
 
 ## Install
 
-<!-- TODO: confirm this URL once the add-on is listed on addons.mozilla.org -->
-**[Get Numrow Video Seek Guard for Firefox](https://addons.mozilla.org/firefox/addon/numrow-video-seek-guard/)**
+<!-- TODO: once published, replace the "Coming soon" line with the link to the listing, after checking the URL:
+**[Get Numrow Video Seek Guard for Firefox](https://addons.mozilla.org/firefox/addon/numrow-video-seek-guard/)** -->
+**Coming soon to the Firefox add-ons catalog.**
 
-Click **Add to Firefox** and you are done. There is nothing to configure.
+Installing will take one click, with nothing to configure. In the meantime, you can try the extension by [running it from source](#run-from-source).
 
 The extension only exists for Firefox on desktop, version 140 or later. It is not available for other browsers or for Firefox for Android.
 
