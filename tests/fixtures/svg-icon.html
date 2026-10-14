@@ -1,0 +1,13 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>Video inside a shadow root, after an SVG icon</title>
+<script src="recorder.js"></script>
+<!-- The search for shadow roots meets this icon before the player's host;
+     asking Chromium for an SVG element's shadow root throws. -->
+<svg width="16" height="16"><circle cx="8" cy="8" r="8"/></svg>
+<div id="host"></div>
+<script>
+  document.getElementById("host")
+    .attachShadow({ mode: "closed" })
+    .appendChild(document.createElement("video"));
+</script>

@@ -2,19 +2,20 @@
 
 *[Lire en français](README.md)*
 
-A Firefox extension that stops the number row of your keyboard from making videos jump around.
+An extension for Firefox, Chrome and other Chromium-based browsers that stops the number row of your keyboard from making videos jump around.
 
 Many video players treat the number-row keys as "jump to 10%, 20%, …" shortcuts, so one stray keypress loses your place. It happens on every keyboard layout, and it is even more surprising on those where these keys type symbols instead of digits, such as AZERTY (`& é " ' ( § è ! ç à`). This extension blocks those accidental jumps. Deliberate jumps still work: hold Shift while pressing the key.
 
 ## Install
 
-<!-- TODO: once published, replace the "Coming soon" line with the link to the listing, after checking the URL:
-**[Get Numrow Video Seek Guard for Firefox](https://addons.mozilla.org/firefox/addon/numrow-video-seek-guard/)** -->
-**Coming soon to the Firefox add-ons catalog.**
+<!-- TODO: once published, replace the "Coming soon" line with the links to the listings, after checking the URLs:
+**[Get Numrow Video Seek Guard for Firefox](https://addons.mozilla.org/firefox/addon/numrow-video-seek-guard/)**
+**[Get Numrow Video Seek Guard for Chrome](https://chromewebstore.google.com/detail/<extension id>)** -->
+**Coming soon to the Firefox add-ons catalog and the Chrome Web Store.**
 
 Installing will take one click, with nothing to configure. In the meantime, you can try the extension by [running it from source](#run-from-source).
 
-The extension only exists for Firefox on desktop, version 140 or later. It is not available for other browsers or for Firefox for Android.
+The extension works on desktop, in Firefox 140 or later, and in Chrome as well as other Chromium-based browsers (Edge, Opera, Brave…), which can install it from the Chrome Web Store. It is not available for Firefox for Android.
 
 ## What to expect
 
@@ -26,11 +27,13 @@ The extension only exists for Firefox on desktop, version 140 or later. It is no
 
 ## Privacy
 
-The extension collects no data and makes no network requests. Firefox asks for access to all websites only because a video player can be on any page.
+The extension collects no data and makes no network requests. The browser asks for access to all websites only because a video player can be on any page.
 
 ## Run from source
 
-Open `about:debugging#/runtime/this-firefox` in Firefox, click **Load Temporary Add-on…** and select `manifest.json`. There is no build step.
+In Firefox, there is no build step: open `about:debugging#/runtime/this-firefox`, click **Load Temporary Add-on…** and select `manifest.json`.
+
+For Chrome or another Chromium-based browser, build the extension first, with Node.js 22 or later: run `npm install`, then `npm run build:chromium`. Then open `chrome://extensions`, turn on **Developer mode**, click **Load unpacked** and select the `web-ext-artifacts/chromium` folder.
 
 ## License
 

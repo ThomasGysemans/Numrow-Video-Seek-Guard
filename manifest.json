@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
   "name": "Numrow Video Seek Guard",
-  "version": "1.1.0",
-  "description": "Stops number-row keys from triggering seek shortcuts in video players, on any keyboard layout. Keys pressed with Shift are left alone.",
+  "version": "1.1.1",
+  "description": "Stops number-row keys from triggering seek shortcuts in video players, on any keyboard layout. Hold Shift to let them through.",
   "icons": {
     "48": "icon.svg",
     "96": "icon.svg"

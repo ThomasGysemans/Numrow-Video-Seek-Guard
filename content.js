@@ -23,8 +23,14 @@
     "button", "checkbox", "radio", "range", "color", "file", "image", "submit", "reset",
   ]);
 
-  // openOrClosedShadowRoot is Firefox-only and also returns closed roots.
-  const shadowRootOf = (el) => el.openOrClosedShadowRoot || el.shadowRoot;
+  // Closed shadow roots are hidden from page scripts, not from extensions.
+  // Firefox exposes them as el.openOrClosedShadowRoot (el.shadowRoot alone only
+  // sees open roots). Chromium has chrome.dom.openOrClosedShadowRoot() instead,
+  // which throws on anything but an HTML element; only those can host a shadow root.
+  const chromiumDom = globalThis.chrome?.dom;
+  const shadowRootOf = chromiumDom
+    ? (el) => (el instanceof HTMLElement ? chromiumDom.openOrClosedShadowRoot(el) : null)
+    : (el) => el.openOrClosedShadowRoot || el.shadowRoot;
 
   // The element that really has focus, which is where key events are sent.
   // event.target and composedPath() stop at the host of a closed shadow root.
@@ -89,6 +95,12 @@
     if ((event.ctrlKey || event.metaKey || event.altKey) && !event.getModifierState("AltGraph")) {
       return;
     }
+
+    // Chromium keeps this script running in the pages already open when the
+    // extension is disabled, removed, reloaded or updated, but its extension
+    // APIs then throw ("Extension context invalidated"). Step aside, as Firefox
+    // does by unloading the script.
+    if (chromiumDom && !chrome.runtime?.id) return;
 
     if (isTextEntry(focusedElement())) return;
     // A page holding the pointer lock is a game or a remote session: it reads

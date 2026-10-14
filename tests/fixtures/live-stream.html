@@ -6,7 +6,10 @@
 <video id="stream" muted></video>
 <script>
   // Stands in for a remote desktop or video call: a MediaStream has no timeline.
+  // Drawing once the stream exists gives it a frame: Chrome holds the page's
+  // load event until the video has one.
   const source = document.getElementById("source");
-  source.getContext("2d");
+  const context = source.getContext("2d");
   document.getElementById("stream").srcObject = source.captureStream();
+  context.fillRect(0, 0, 1, 1);
 </script>

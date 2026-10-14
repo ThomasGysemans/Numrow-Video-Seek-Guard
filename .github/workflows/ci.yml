@@ -17,6 +17,8 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm run lint
-      # Firefox ships with the runner image; the tests start it headless.
+      # Firefox and Chrome ship with the runner image; the tests start them headless.
       - run: firefox --version
+      - run: google-chrome --version
       - run: npm test
+      - run: npm run build:chromium
