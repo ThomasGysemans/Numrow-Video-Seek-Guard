@@ -8,10 +8,9 @@ De nombreux lecteurs vidéo traitent les touches de la rangée des chiffres comm
 
 ## Installation
 
-<!-- TODO : à la publication, remplacer la ligne « Bientôt disponible » par les liens vers les fiches, en vérifiant les adresses :
 **[Installer Numrow Video Seek Guard pour Firefox](https://addons.mozilla.org/firefox/addon/numrow-video-seek-guard/)**
-**[Installer Numrow Video Seek Guard pour Chrome](https://chromewebstore.google.com/detail/<identifiant de l'extension>)** -->
-**Bientôt disponible sur le catalogue des modules complémentaires de Firefox et sur le Chrome Web Store.**
+
+**[Installer Numrow Video Seek Guard pour Chrome](https://chromewebstore.google.com/detail/numrow-video-seek-guard/lcihljbfkhnbdfiememedcefldpngedn)**
 
 L'installation se fera en un clic, sans rien à configurer. En attendant, vous pouvez essayer l'extension en la [lançant depuis les sources](#lancer-depuis-les-sources).
 

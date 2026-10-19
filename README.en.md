@@ -8,10 +8,9 @@ Many video players treat the number-row keys as "jump to 10%, 20%, …" shortcut
 
 ## Install
 
-<!-- TODO: once published, replace the "Coming soon" line with the links to the listings, after checking the URLs:
 **[Get Numrow Video Seek Guard for Firefox](https://addons.mozilla.org/firefox/addon/numrow-video-seek-guard/)**
-**[Get Numrow Video Seek Guard for Chrome](https://chromewebstore.google.com/detail/<extension id>)** -->
-**Coming soon to the Firefox add-ons catalog and the Chrome Web Store.**
+
+**[Get Numrow Video Seek Guard for Chrome](https://chromewebstore.google.com/detail/numrow-video-seek-guard/lcihljbfkhnbdfiememedcefldpngedn)**
 
 Installing will take one click, with nothing to configure. In the meantime, you can try the extension by [running it from source](#run-from-source).
 
