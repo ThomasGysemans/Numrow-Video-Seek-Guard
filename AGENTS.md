@@ -33,7 +33,7 @@ CI (`.github/workflows/ci.yml`) runs the lint, the tests and the Chromium build 
 - Chrome holds a page's `load` event until each `<video>` has a frame, so `driver.get` hangs on a fixture whose video never gets one. `live-stream.html` draws into its canvas for that reason.
 - `once the extension is removed` uninstalls the extension mid-suite, then reinstalls it in its `after` hook so that the tests after it still have it. It watches BiDi `log.entryAdded` (`getLogInspector`), the only place where an error thrown by the content script shows up.
 - Only files referenced by the manifest (content scripts and icons) are copied into either package, so those are picked up automatically, but any other new runtime file must be added to both `packFirefox` and `buildChromium`.
-- `webExt.ignoreFiles` in `package.json` keeps tests, scripts, docs and npm files out of `npm run lint` and out of the zip made by `npm run build`.
+- `webExt.ignoreFiles` in `package.json` keeps tests, scripts, docs (the READMEs and the screenshots in `docs/` they show) and npm files out of `npm run lint` and out of the zip made by `npm run build`.
 
 ## Architecture
 

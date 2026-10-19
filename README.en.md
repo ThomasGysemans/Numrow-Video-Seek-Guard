@@ -6,6 +6,8 @@ An extension for Firefox, Chrome and other Chromium-based browsers that stops th
 
 Many video players treat the number-row keys as "jump to 10%, 20%, …" shortcuts, so one stray keypress loses your place. It happens on every keyboard layout, and it is even more surprising on those where these keys type symbols instead of digits, such as AZERTY (`& é " ' ( § è ! ç à`). This extension blocks those accidental jumps. Deliberate jumps still work: hold Shift while pressing the key.
 
+![A number-row key pressed by mistake leaves the video at 12:34; with Shift held, the same key makes it jump to 70%.](docs/screenshot.png)
+
 ## Install
 
 **[Get Numrow Video Seek Guard for Firefox](https://addons.mozilla.org/firefox/addon/numrow-video-seek-guard/)**

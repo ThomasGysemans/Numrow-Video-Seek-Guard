@@ -6,6 +6,8 @@ Une extension pour Firefox, Chrome et les autres navigateurs basés sur Chromium
 
 De nombreux lecteurs vidéo traitent les touches de la rangée des chiffres comme des raccourcis « aller à 10 %, 20 %, … » : une touche effleurée par erreur, et vous perdez le fil de votre vidéo. Cela arrive avec toutes les dispositions de clavier, et surprend encore plus sur celles où ces touches tapent des symboles plutôt que des chiffres, comme l'AZERTY (`& é " ' ( § è ! ç à`). Cette extension bloque ces sauts accidentels. Les sauts volontaires restent possibles : il suffit de maintenir Maj en appuyant sur la touche.
 
+![Une touche de la rangée des chiffres pressée par erreur laisse la vidéo à 12:34 ; avec Maj, la même touche la fait sauter à 70 %.](docs/screenshot-fr.png)
+
 ## Installation
 
 **[Installer Numrow Video Seek Guard pour Firefox](https://addons.mozilla.org/firefox/addon/numrow-video-seek-guard/)**

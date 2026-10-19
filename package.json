@@ -13,6 +13,7 @@
   },
   "webExt": {
     "ignoreFiles": [
+      "docs",
       "scripts",
       "tests",
       "package.json",
